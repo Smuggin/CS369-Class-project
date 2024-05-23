@@ -1,10 +1,9 @@
 import Navbar from './Navbar.jsx'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-function Header(){
+function Header({user}){
 
     return(
     <div className='header'>
-        <Navbar/>
+        <Navbar user={user}/>
     </div>);
 }
 export default Header
