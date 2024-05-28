@@ -8,8 +8,12 @@ function classNames(...classes) {
 export default function Example({user}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const logout =() =>{
+    if(sessionStorage.getItem('user')!=null){
+      sessionStorage.clear();
+    }else{
     window.open("http://localhost:5000/auth/logout","_self");
     setloading(false);
+  }
   }
   return (
     <header className="bg-white">

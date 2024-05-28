@@ -1,11 +1,11 @@
-const sql = require('mssql')
+const sql = require('mssql');
+require('dotenv').config();
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 const passport = require("passport")
 const axios = require("axios");
-var LocalStrategy = require('passport-local').Strategy;
-var crypto = require('crypto');
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
+
+const GOOGLE_CLIENT_ID = process.env.CLIENT_ID
+const GOOGLE_CLIENT_SECRET = process.env.CLIENT_SECRET
 const sqlConfig ={
   server: 'LAPTOP-N6VQC1VS\\SQLEXPRESS',
   database : 'Northwind',
@@ -50,7 +50,6 @@ passport.use(new GoogleStrategy({
             // Insert federated credentials
             await pool.request()
                 .input('user_id', sql.Int, id)
-                console.log("bug")
                 .input('provider', sql.VarChar, 'https://accounts.google.com')
                 .input('subject', sql.VarChar, profile.id)
                 .query('INSERT INTO federated_credentials (user_id, provider, subject) VALUES (@user_id, @provider, @subject)');
@@ -79,33 +78,25 @@ passport.use(new GoogleStrategy({
     }
 }
 ));
-passport.use(new LocalStrategy(async function verify(username,password,cb){
-  console.log(username,password)
-    try {
-      const pool = await sql.connect(sqlConfig);
-      let result = pool.request()
-      .input('email',sql.VarChar,username)
-      .input('password',sql.VarChar,password)
-      .query('SELECT * FROM users WHERE email = @email');
-      if (err) {return cb(err)}
-      let row = result.recordset[0];
-      console.log(row)
-      if (!row) {return cb(null,false,{message:"Incorrect username or password."}); }
-
-      crypto.pbkdf2(password,row.salt,310000,32 ,'sha256',function(err,password){
-        if (err){return cb(err);}
-        if(!crypto.timingSafeEqual(row.password, password)){
-          return cb(null,false,{message:'Incorrect username or password.'});
-        }
-        return cb(null,row);
-      })
-    }catch (err){
-      cb(err);
-    }
-}));
+  
 passport.serializeUser((user,done)=>{
-    done(null,user)
+    console.log("serial",user.user_id)
+    done(null,user.user_id)
 })
-passport.deserializeUser((user,done)=>{
-    done(null,user)
-})
+passport.deserializeUser(async (id, done) => {
+    try {
+        const pool = await sql.connect(sqlConfig);
+        const result = await pool.request()
+            .input('user_id', sql.Int, id)
+            .query('SELECT * FROM users WHERE user_id = @user_id');
+        
+        if (result.recordset.length > 0) {
+            console.log("deserial",result.recordset[0])
+            done(null, result.recordset[0]);
+        } else {
+            done(new Error('User not found'));
+        }
+    } catch (err) {
+        done(err);
+    }
+});

@@ -9,23 +9,29 @@ function Login(){
     const google =()=>{
         window.open("http://localhost:5000/auth/google/callback")
     }
-    const [email, setEmail] = useState('')
+    const [username, setEmail] = useState('')
     const [password,setPassword] = useState('')
-    console.log(email)
-    console.log(email)
-const handleSubmit = (e) =>{
-    e.preventdefault();
-    try {
-        const res = axios.post('http://localhost:5000/auth/password/', {
-            email,
-            password
-        });
-        console.log(res.data.message);
-    } catch (err) {
-        console.log(err);
-        // Handle error
-    }
-};
+    const handleSubmit = async (e) =>{
+        console.log("clicked")
+        e.preventDefault();
+        try {
+            const res = await axios.post('http://localhost:5000/auth/password/', {
+                username,
+                password
+            },{
+                headers:{
+                    'Content-Type':'application/x-www-form-urlencoded',
+                }
+            })
+            if(res.data.message==="successfull"){
+                sessionStorage.setItem('user', res.data.user)
+                window.open('http://localhost:5173/');
+            }
+        } catch (err) {
+            console.log(err);
+            // Handle error
+        }
+    };
     return(
         <div className="bg-gray-300">
         <div className="grid divide-y justify-center content-center max-w-full h-[100vh] font-sans">
@@ -38,11 +44,23 @@ const handleSubmit = (e) =>{
             <div className="inputs space-y-4 font-medium border-none">
                 <div className="input">
                     <label className="font-medium text-lg">Email</label>
-                    <input className="w-full mt-2 border-2 border-gray-100 rounded-xl p-4 bg-transparent font-light" type="email" id="username" placeholder="Enter your email" value={email} onChange={(e)=>setEmail(e.target.value)} required/>
+                    <input className="w-full mt-2 border-2 border-gray-100 rounded-xl p-4 bg-transparent font-light" 
+                    type="email" 
+                    id="username" 
+                    placeholder="Enter your email" 
+                    value={username} 
+                    onChange={(e)=>setEmail(e.target.value)} 
+                    required/>
                 </div>
                 <div className="input">
                     <label className="font-medium text-lg">Password</label>
-                    <input className="w-full mt-2 border-2 border-gray-100 rounded-xl p-4 bg-transparent font-light" type="password" id="password" placeholder="Enter your password"value={password} onChange={(e)=>setPassword(e.target.value)}  required/>
+                    <input className="w-full mt-2 border-2 border-gray-100 rounded-xl p-4 bg-transparent font-light"
+                     type="password" 
+                     id="password" 
+                     placeholder="Enter your password"
+                     value={password} 
+                     onChange={(e)=>setPassword(e.target.value)}  
+                     required/>
                 </div>
                 
             </div>

@@ -3,10 +3,12 @@ const cookieSession = require("cookie-session");
 const express = require("express");
 const app = express()
 const passport = require("passport")
-const passportSetup = require("./passport.cjs")
+require("./passport.cjs")
 const cors = require("cors");
 const authRoute = require("./authen.cjs")
+const bodyParser = require('body-parser')
 
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieSession(
     {
         name:"session",keys:["test"],maxAge: 24 * 60 * 60 *100
