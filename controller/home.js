@@ -47,3 +47,59 @@ export const getCategorizedByID = async (id)=>{
     console.log(err);
   }
 };
+export const getCategorize = async()=>{
+  try{
+    const pool = await sql.connect(sqlConfig);
+    const result = await pool.request()
+    .query('SELECT * FROM Categories')
+    return result.recordsets[0];
+  }catch(err){
+    console.log(err)
+  }
+}
+export const getSupplierByID = async(id)=>{
+  try {
+    const pool = await sql.connect(sqlConfig);
+    const result = await pool.request()
+      .input('SupplierID', sql.Int, id)
+      .query('SELECT * FROM Suppliers WHERE SupplierID = @SupplierID');
+    return result.recordsets[0];
+  } catch (err) {
+    console.log(err);
+  }
+}
+export const getSuppliers = async()=>{
+  try {
+    const pool = await sql.connect(sqlConfig);
+    const result = await pool.request()
+      .query('SELECT * FROM Suppliers');
+    return result.recordsets[0];
+  } catch (err) {
+    console.log(err);
+  }
+}
+export const getUnits = async()=>{
+  try {
+    const pool = await sql.connect(sqlConfig);
+    const result = await pool.request().query('SELECT DISTINCT Unit FROM Products');
+    return result.recordsets[0];
+  } catch (err) {
+    console.log(err);
+  }
+}
+export const postProducts = async(data)=>{
+  try{
+    const pool =await sql.connect(sqlConfig);
+    const result = await pool.request()
+    .input('ProductName', sql.VarChar, data.ProductName)
+    .input('SupplierID',sql.Int,data.SupplierID)
+    .input('CategoryID',sql.Int,data.CategoryID)
+    .input('Unit', sql.VarChar, data.Unit)
+    .input('Price',sql.Money,data.Price)
+    .input('Pictures',sql.VarChar,data.Pictures)
+    .query('INSERT INTO Products (ProductName,SupplierID,CategoryID,Unit,Price,Pictures) VALUES (@ProductName,@SupplierID,@CategoryID,@Unit,@Price,@Pictures)')
+    return result.recordsets[0];
+  }catch (err) {
+    console.log(err);
+  }
+}

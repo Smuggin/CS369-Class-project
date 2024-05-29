@@ -8,6 +8,7 @@ const ProductCard = () => {
   const [products, setProducts] = useState(null);
   const [product,setProduct] = useState(null)
   const [category,setCategory] =useState(null)
+  const [supplier,setSupplier] =useState(null)
   const [open,setOpen]=useState(false)
   useEffect(() => {
     const fetchProduct = async () => {
@@ -28,6 +29,7 @@ const ProductCard = () => {
       console.log("success",res.data)
       setProduct(res.data.data)
       setCategory(res.data.Categories)
+      setSupplier(res.data.Supplier)
       console.log(product)
       console.log(category)
       console.log(product[0].ProductName)
@@ -52,7 +54,7 @@ const ProductCard = () => {
             products.data.map((product) => (
               <li key={product.ProductID}>
                 <a href="#" className="card">
-                  <img src={product.Pictures} className="card__image" alt={product.ProductName} />
+                  <img src={product.Pictures && product.Pictures.startsWith('image') ? ("../../server/public/images/"+product.Pictures): product.Pictures} className="card__image" alt={product.ProductName} />
                   <div className="card__overlay">
                     <div className="card__header">
                       <svg className="card__arc" xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +75,9 @@ const ProductCard = () => {
               </li>
             ))}
         </ul>
-        {product && category ? 
+        {
+          //I know I could use ref here but you know bad code structures oopsies doopsies
+        product && category && supplier ? 
         <Transition show={open}>
         {console.log(open)}
       <div className="relative z-10" onClose={setOpen}>
@@ -99,9 +103,9 @@ const ProductCard = () => {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                <div className="bg-white px-2 pb-3 pt-4 h-72 w-full sm:p-6 sm:pb-4">
+                <div className="bg-white px-2 pb-3 pt-4 h-86 w-full sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                  <img src= {product[0].Pictures} className="h-72 w-64 my-auto" alt={product[0].ProductName} />
+                  <img src= {product[0].Pictures && product[0].Pictures.startsWith('image') ? ("../../server/public/images/"+product[0].Pictures): product.Pictures} className="h-72 w-64 my-auto" alt={product[0].ProductName} />
                     <div className="mt-3 text-center w-full sm:ml-4 sm:mt-0 sm:text-left">
                       <div as="h3" className="text-3xl font-semibold leading-6 text-gray-900">
                       {product.length > 0 && product[0].ProductName}
@@ -113,13 +117,16 @@ const ProductCard = () => {
                       </div>
                       <div className="mt-3">
                         <p className="text-lg font-semibold text-red-600">
-                          {product[0].Price} ฿
+                          {product[0].Price} ฿ <span className='text-xs font-light opacity-50'>({product[0].Unit})</span>
                         </p>
                       </div>
                       <div className="mt-2">
                         <p className="text-sm text-gray-700">
                         {category.length > 0 && category[0].Description}
                         </p>
+                      </div>
+                      <div className="mt-36 text-sm text-bold text-black">
+                      Supplier <span className='text-gray-500 opacity-50'>{supplier[0].SupplierName}</span>
                       </div>
                     </div>
                   </div>

@@ -6,6 +6,7 @@
   import { useEffect,useState } from 'react';
   import { ClipLoader } from 'react-spinners';
   import axios from 'axios';
+import ProductForm from '../Components/ProductForm.jsx';
   function App() {
     const [user,setUser]= useState(null);
     const [loading,setloading] =useState(false)
@@ -77,7 +78,7 @@
             }/>
               <Route path="/login" element={user ? <Navigate to="/"/> : <Login/>}/>
               <Route path="/:id" element={user ? <Header/> : <Navigate to ="/login"/>}/> 
-              {/* <Route path="/cart" element={<Cart/>}/> */}
+              <Route path="/addProduct" element={user? <ProductForm user={user}/>:<Navigate to ="/Login"/>}/>
           </Routes>
           </div>
         </BrowserRouter>
