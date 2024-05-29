@@ -25,7 +25,7 @@ function Login(){
             })
             if(res.data.message==="successfull"){
                 sessionStorage.setItem('user', res.data.user)
-                window.open('http://localhost:5173/');
+                window.open('http://localhost:5173/','_self');
             }
         } catch (err) {
             console.log(err);
