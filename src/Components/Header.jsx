@@ -2,8 +2,11 @@ import Navbar from './Navbar.jsx'
 function Header({user}){
 
     return(
+    <>
     <div className='header'>
         <Navbar user={user}/>
-    </div>);
+    </div>
+    </>
+);
 }
 export default Header

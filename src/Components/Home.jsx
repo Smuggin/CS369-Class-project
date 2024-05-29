@@ -1,5 +1,7 @@
-function Product(){
-    
+import ProductCard from "./ProductCard"
+function Home(){
+    return (
+        <ProductCard/>
+    );
 }
-
-export default Product
+export default Home

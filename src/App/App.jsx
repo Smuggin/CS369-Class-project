@@ -1,6 +1,7 @@
   import Header from '../Components/Header.jsx'
   import Footer from '../Components/Footer.jsx'
   import Login from '../Components/Login.jsx'
+  import Home from '../Components/Home.jsx'
   import { BrowserRouter as Router, Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
   import { useEffect,useState } from 'react';
   import { ClipLoader } from 'react-spinners';
@@ -68,8 +69,12 @@
         <BrowserRouter>
         <div>
           <Routes>
-              <Route path="/" element={<Header user={user}/>}/>
-              
+              <Route path="/" element={
+              <>
+              <Header user={user}/>
+              <Home/>
+              </>
+            }/>
               <Route path="/login" element={user ? <Navigate to="/"/> : <Login/>}/>
               <Route path="/:id" element={user ? <Header/> : <Navigate to ="/login"/>}/> 
               {/* <Route path="/cart" element={<Cart/>}/> */}
