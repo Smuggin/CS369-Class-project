@@ -1,0 +1,50 @@
+sudo apt-get update -y
+
+
+sudo apt-get install -y git
+
+{
+    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+    sudo apt-get install -y nodejs
+}
+
+
+sudo npm install pm2 -g
+
+cd /home/ubuntu
+
+# Clone the repository
+git clone -b main https://github.com/Smuggin/CS369-Class-project
+
+cd CS369-Class-project
+sudo npm install
+
+sudo pm2 start ./server/middleware.js
+
+sudo pm2 save
+
+sudo pm2 startup
+
+
+sudo apt install -y nginx
+
+sudo systemctl start nginx
+sudo systemctl enable nginx
+sudo nano /etc/nginx/sites-available/default
+#server {
+    listen 80;
+    server_name your-domain.com; # Or your public DNS if not using a domain
+
+    root /home/ubuntu/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+#
+#test
+sudo nginx -t
+sudo systemctl reload nginx
+
+sudo pm2 start ./server/middleware.js
